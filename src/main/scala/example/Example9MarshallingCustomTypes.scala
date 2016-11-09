@@ -33,7 +33,7 @@ object Example9MarshallingCustomTypes extends App {
   val route =
     get {
       path("user") {
-        complete(Person("Ann", 35))
+        complete("theperson") // Person("Ann", 35))
       }
     }
 

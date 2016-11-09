@@ -2,8 +2,13 @@ package example
 
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
+import akka.http.scaladsl.model.ContentTypes
+import akka.http.scaladsl.model.HttpEntity
+import akka.http.scaladsl.model.HttpResponse
 import akka.http.scaladsl.server.Route
 import akka.stream.ActorMaterializer
+import akka.stream.scaladsl.Source
+import akka.util.ByteString
 
 import scala.io.StdIn
 import scala.util.Failure
@@ -19,7 +24,9 @@ object Example8Entities extends App {
   val route =
     get {
       path("user") {
-        complete("Hello user")
+        complete {
+          "test"
+        }
       }
     }
 
@@ -35,3 +42,19 @@ object Example8Entities extends App {
         system.terminate()
     }
 }
+
+/*
+HttpEntity.Strict(ContentTypes.`text/plain(UTF-8)`, ByteString("test"))
+HttpEntity.Default(ContentTypes.`text/plain(UTF-8)`, 4, Source.single(ByteString("te")) ++ Source.single(ByteString("st")))
+
+{
+  val entity = HttpEntity.CloseDelimited(ContentTypes.`text/plain(UTF-8)`, Source.single(ByteString("te")) ++ Source.single(ByteString("st")))
+  HttpResponse(entity = entity)
+}
+
+{
+  val entity = HttpEntity.Chunked.fromData(ContentTypes.`text/plain(UTF-8)`, Source.single(ByteString("te")) ++ Source.single(ByteString("st")))
+  HttpResponse(entity = entity)
+}
+
+*/
