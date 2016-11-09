@@ -2,9 +2,11 @@ package example
 
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
+import akka.http.scaladsl.marshalling.Marshaller
 import akka.http.scaladsl.model.HttpCharset
 import akka.http.scaladsl.model.HttpCharsets
 import akka.http.scaladsl.model.MediaType
+import akka.http.scaladsl.model.MediaTypes
 import akka.http.scaladsl.server.Route
 import akka.stream.ActorMaterializer
 import spray.json.JsValue
@@ -33,7 +35,7 @@ object Example9MarshallingCustomTypes extends App {
   val route =
     get {
       path("user") {
-        complete("theperson") // Person("Ann", 35))
+        complete("ann") // Person("Ann", 35))
       }
     }
 
@@ -52,9 +54,26 @@ object Example9MarshallingCustomTypes extends App {
 
 /*
 
-import SprayJsonSupport.sprayJsonMarshaller
 
-implicit val customJsonMarshaller =
+
+
+
+
+
+
+  //import SprayJsonSupport.sprayJsonMarshaller
+
+  val customJsonMarshaller =
     SprayJsonSupport.sprayJsonMarshaller[Person]
-      .wrap(customMediaType)((json: Person) ⇒ json)
+      .wrap(customMediaType)((person: Person) ⇒ person) // sprayJsonMarshaller knows what to do with it
+
+  val customTextMarshaller =
+    Marshaller.StringMarshaller
+      .wrap(MediaTypes.`text/plain`)((person: Person) ⇒ person.toString)
+
+  implicit val combinedMarshaller =
+    Marshaller.oneOf(customTextMarshaller, customJsonMarshaller)
+
+
+
  */ 
