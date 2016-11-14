@@ -18,7 +18,17 @@ object Example5PathSetup extends App {
 
   val route =
     get {
-      path("user" / "def") {
+      pathPrefix("user") {
+        path("def") {
+          complete("Hello user")
+        } ~
+          path("ghi" / IntNumber) { i ⇒
+            complete("hgi")
+          } ~
+          pathEnd { complete("what happened") }
+      }
+    }
+  /*  path("user" / "def") {
         complete("Hello user")
       } ~
         path("user" / "ghi") {
@@ -26,8 +36,7 @@ object Example5PathSetup extends App {
         } ~
         path("user" / Segment) { other ⇒
           complete(s"Hello '$other'")
-        }
-    }
+        }*/
 
   Http().bindAndHandleAsync(Route.asyncHandler(route), "localhost", 8080)
     .onComplete {

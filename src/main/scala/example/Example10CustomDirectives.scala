@@ -19,12 +19,15 @@ object Example10CustomDirectives extends App {
 
   import akka.http.scaladsl.server.Directives._
 
+  val propagateHeader =
+    headerValueByName("X-Request-Id").flatMap { id ⇒ // propagate header to response
+      respondWithHeader(RawHeader("X-Request-Id", id)) & provide(id)
+    }
+
   val route =
     path("user") {
-      headerValueByName("X-Request-Id") { id ⇒ // propagate header to response
-        respondWithHeader(RawHeader("X-Request-Id", id)) {
-          complete(s"Request with ID: $id")
-        }
+      propagateHeader { id ⇒
+        complete(s"Request with ID: $id")
       }
     }
 

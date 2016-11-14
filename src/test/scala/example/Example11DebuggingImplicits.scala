@@ -30,7 +30,9 @@ object Example11DebuggingImplicits extends App {
   val route =
     get {
       path("user") {
-        complete(Person("Ann", 35))
+        ShowTree.show {
+          complete(Person("Ann", 35))
+        }
       }
     }
 

@@ -7,6 +7,7 @@ import akka.http.scaladsl.model.HttpEntity
 import akka.http.scaladsl.model.HttpResponse
 import akka.http.scaladsl.server.Route
 import akka.stream.ActorMaterializer
+import akka.stream.ThrottleMode
 import akka.stream.scaladsl.Source
 import akka.util.ByteString
 
@@ -25,7 +26,19 @@ object Example8Entities extends App {
     get {
       path("user") {
         complete {
-          "test"
+
+          //"abc"
+          import scala.concurrent.duration._
+          HttpResponse(entity =
+            //HttpEntity(ContentTypes.`text/plain(UTF-8)`, ByteString("abc"))
+            HttpEntity.Chunked.fromData(
+              ContentTypes.`text/plain(UTF-8)`,
+              Source.fromIterator(() ⇒ Iterator.iterate(0)(_ + 1))
+                .throttle(1, 1.second, 1, ThrottleMode.Shaping)
+                .map { i ⇒
+                  ByteString(i.toString)
+                }
+            ))
         }
       }
     }
